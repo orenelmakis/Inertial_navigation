@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<robot name="husky_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>$(arg imu_rate)</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu/inertial</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>$(arg imu_rate)</updateRateHZ>
+        <gaussianNoise>$(arg gaussian_noise)</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="ground_truth" filename="libgazebo_ros_p3d.so">
+      <frameName>map</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>ground_truth</topicName>
+      <updateRate>30.0</updateRate>
+    </plugin>
+  </gazebo>
+
+
+  <xacro:include filename="$(find husky_description)/urdf/husky.urdf.xacro"/>
+
+</robot>

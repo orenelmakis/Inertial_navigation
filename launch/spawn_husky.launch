@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- <arg name="multimaster" default="false"/> -->
+
+  <arg name="robot_namespace" default="/husky"/>
+  <arg name="ns"        default="husky"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="joystick" default="false" />
+  <arg name="imu_rate" default="100"/>
+  <arg name="gaussian_noise" default="0.01"/>
+  
+
+      <include file="$(find husky_control)/launch/control.launch">
+      <arg name="enable_ekf" value="false"/>
+      </include>
+      <include file="$(find husky_control)/launch/teleop.launch">
+        <arg name="joystick" value="$(arg joystick)" />
+      </include>
+
+
+
+    <param name="robot_description"
+    command="$(find xacro)/xacro '$(find inertial_nav)/urdf/husky.urdf.xacro' '--inorder' 'namespace:=$(arg ns)'
+    'imu_rate:=$(arg imu_rate)' 'gaussian_noise:=$(arg gaussian_noise)'" />
+
+    <node name="spawn_create_model" pkg="gazebo_ros" type="spawn_model"
+        args="-x $(arg x)
+              -y $(arg y)
+              -z $(arg z)
+              -Y $(arg yaw)
+              -unpause
+              -urdf
+              -param robot_description
+              -model $(arg ns)" />
+</launch>
